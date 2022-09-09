@@ -34,7 +34,17 @@ pub contract JacobTucker {
     pub let is: String
 
     init() {
-        self.is = "Hello, World!"
+        self.is = "The Best!"
     }
 }
+```
+
+
+```
+import JacobTucker from 0x03
+
+pub fun main(): String {
+    return JacobTucker.is
+}
+
 ```
