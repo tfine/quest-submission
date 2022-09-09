@@ -48,3 +48,12 @@ pub fun main(): String {
 }
 
 ```
+
+Please forgive lack of screenshot if that's ok. I wouldn't cheat:
+```
+17:01:43 
+Script 
+Result
+{"type":"String","value":"The Best!"}
+
+```
