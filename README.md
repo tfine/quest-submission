@@ -13,3 +13,13 @@ Explain what a Smart Contract is. You can read this to help you, but you don't h
 Explain the difference between a script and a transaction.
 
 * A script can merely read data from a blockchain, while a transaction implies modification or writing to the blockchain. A script is generally free while a transaction costs coinage.
+
+Chapter 1, Day 2
+
+What are the 5 Cadence Programming Language Pillars?
+
+Safety and Security (language encourages secure and safe code); Clarity (language is constructed to make operations clear and apparent); Approachability (language is consistent with other languages, especially in their best practice); Developer Experience (language is designed to produce a quality and enjoyable experience for developers); Resource Oriented Programming (language has a unique model built around scarce resources in computing).
+
+In your opinion, even without knowing anything about the Blockchain or coding, why could the 5 Pillars be useful (you don't have to answer this for #5)?
+
+These pillars give cadence an advantage over alternatives used on other chains, which are often hard to program and read, and which aren't necessarily designed around what has begun common usages and demands for the blockchain.
