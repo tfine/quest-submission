@@ -26,3 +26,15 @@ These pillars give cadence an advantage over alternatives used on other chains, 
 
 
 ![Image](/Screen Shot 2022-09-09 at 4.40.16 PM.png "image")
+
+```
+
+pub contract JacobTucker {
+
+    pub let is: String
+
+    init() {
+        self.is = "Hello, World!"
+    }
+}
+```
