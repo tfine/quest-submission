@@ -25,4 +25,4 @@ In your opinion, even without knowing anything about the Blockchain or coding, w
 These pillars give cadence an advantage over alternatives used on other chains, which are often hard to program and read, and which aren't necessarily designed around what has been common usages and demands for the blockchain.
 
 
-![Alt text](/creen Shot 2022-09-09 at 4.40.16 PM.png "image")
+![Alt text](/Screen Shot 2022-09-09 at 4.40.16 PM.png "image")
