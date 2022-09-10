@@ -25,6 +25,8 @@ In your opinion, even without knowing anything about the Blockchain or coding, w
 These pillars give cadence an advantage over alternatives used on other chains, which are often hard to program and read, and which aren't necessarily designed around what has been common usages and demands for the blockchain.
 
 
+Chapter 2, Day 1
+
 ![Image](/Screen Shot 2022-09-09 at 4.40.16 PM.png "image")
 
 ```
@@ -55,5 +57,32 @@ Please forgive lack of screenshot if that's ok. I wouldn't cheat:
 Script 
 Result
 {"type":"String","value":"The Best!"}
-
 ```
+
+
+Chapter 2, Day 2
+
+
+Explain why we wouldn't call changeGreeting in a script.
+
+-- Scripts cannot change blockchain data.
+
+What does the AuthAccount mean in the prepare phase of the transaction?
+
+-- It approves a transaction and lets the transaction use data in a given account.
+
+What is the difference between the prepare phase and the execute phase in the transaction?
+
+-- The prepare phase accesses data in an account, whereas the execute phase uses this data or the results of the prepare transaction to call other functions on the blockchain.
+
+This is the hardest quest so far, so if it takes you some time, do not worry! I can help you in the Discord if you have questions.
+
+Add two new things inside your contract:
+
+A variable named myNumber that has type Int (set it to 0 when the contract is deployed)
+A function named updateMyNumber that takes in a new number named newNumber as a parameter that has type Int and updates myNumber to be newNumber
+Add a script that reads myNumber from the contract
+
+Add a transaction that takes in a parameter named myNewNumber and passes it into the updateMyNumber function. Verify that your number changed by running the script again.
+
+
