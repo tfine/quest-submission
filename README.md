@@ -127,3 +127,49 @@ transaction(myNewNumber: Int) {
   }
 }
 ```
+
+
+Chapter 2, Day 3
+
+1.
+
+```
+pub fun main() {
+  var favoritePeople: [String] = ["Me", "Myself", "Jacob Tucker"]
+  log(favoritePeople);
+}
+```
+
+2.
+```
+pub fun main() {
+  var socialMedia: {String: UInt64} = {"Facebook": 5, "Instagram": 6, "Twitter": 1, "YouTube": 2, "Reddit": 3, "LinkedIn": 4}
+  log(socialMedia);
+}
+```
+
+3. Explain what the force unwrap operator ! does, with an example different from the one I showed you (you can just change the type).
+
+The operator ! "unwraps" an optional turning it its basic type, or directly aborting the program.
+
+```
+pub fun main(): Int {
+    let thing: Int? = 5
+    log(thing);
+    return thing!
+}
+```
+
+4. Using this picture below, explain...
+
+What the error message means:
+
+- Program is returning a String optional rather than a String
+
+Why we're getting this error
+
+- We declared that the function should a normal String
+
+How to fix it
+
+- Either change definition of function to return an optional, or "unwrap" any optional with the "!" extension: return thing[0x03]!
