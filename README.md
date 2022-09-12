@@ -173,3 +173,63 @@ Why we're getting this error
 How to fix it
 
 - Either change definition of function to return an optional, or "unwrap" any optional with the "!" extension: return thing[0x03]!
+
+
+Chapter 2, Day 4
+
+CONTRACT:
+
+```
+pub contract Authentication {
+
+    pub var wardrobes: {Address: Wardrobe}
+    
+    pub struct Wardrobe {
+        pub let hat: String
+        pub let top: String
+        pub let bottom: String
+        pub let account: Address
+
+        // You have to pass in 4 arguments when creating this Struct.
+        init(_hat: String, _top: String, _bottom: String, _account: Address) {
+            self.hat = _hat
+            self.top = _top
+            self.bottom = _bottom
+            self.account = _account
+        }
+    }
+
+    pub fun addWardrobe(hat: String, top: String, bottom: String, account: Address) {
+        let newWardrobe = Wardrobe(_hat: hat, _top: top, _bottom: bottom, _account: account)
+        self.wardrobes[account] = newWardrobe
+    }
+
+    init() {
+        self.wardrobes = {}
+    }
+
+}
+```
+
+TRANSACTION:
+```
+import Authentication from 0x01
+
+transaction(hat: String, top: String, bottom: String, account: Address) {
+
+    prepare(signer: AuthAccount) {}
+
+    execute {
+        Authentication.addWardrobe(hat: hat, top: top, bottom: bottom, account: account)
+    }
+}
+```
+
+SCRIPT:
+```
+import Authentication from 0x01
+
+pub fun main(account: Address): Authentication.Wardrobe {
+    return Authentication.wardrobes[account]!
+}
+```
