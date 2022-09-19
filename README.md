@@ -233,3 +233,47 @@ pub fun main(account: Address): Authentication.Wardrobe {
     return Authentication.wardrobes[account]!
 }
 ```
+
+Chapter 3, Day 1
+
+1. In words, list 3 reasons why structs are different from resources.
+
+* Unlike structs, resources can't be copied.
+* Unlike structs, resources can't be lost, without being intentionally destroyed.
+* Unlike structs, resouces must be created with very intentional, specific syntax.
+
+2. Describe a situation where a resource might be better to use than a struct.
+
+A resource is useful when the data used is valuable and needs to be carefully tracked, for example with an expensive NFT.
+
+3. What is the keyword to make a new resource?
+
+"create" resource() 
+
+4. Can a resource be created in a script or transaction (assuming there isn't a public function to create one)?
+
+No, there must be a function for the creation of a resource.
+
+5. What is the type of the resource below?
+
+The type is listed as a function.
+
+6. pub resource Jacob {
+
+}
+Let's play the "I Spy" game from when we were kids. I Spy 4 things wrong with this code. Please fix them.
+pub contract Test {
+
+    // Hint: There's nothing wrong here ;)
+    pub resource Jacob {
+        pub let rocks: Bool
+        init() {
+            self.rocks = true
+        }
+    }
+
+    pub fun createJacob(): @Jacob { // there is 1 here
+        let myJacob <- create Jacob() // there are 2 here
+        return <- myJacob // there is 1 here
+    }
+}
