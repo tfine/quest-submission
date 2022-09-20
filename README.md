@@ -277,3 +277,46 @@ pub contract Test {
         return <- myJacob // there is 1 here
     }
 }
+
+Chapter 3, Day 2
+
+<pre>
+pub contract Quest {
+
+    pub resource Title {
+        pub let text: String
+        init() {
+          self.text = "Placeholder"
+        }
+    }
+
+    pub var arrayOfTitles: @[Title]
+
+    pub fun addArrayTitle(title: @Title) {
+        self.arrayOfTitles.append(<- title)
+    }
+
+    pub fun removeArrayTitle(index: Int): @Title {
+        return <- self.arrayOfTitles.remove(at: index)
+    }
+
+    pub var dictionaryOfTitles: @{String: Title}
+
+    pub fun addDictTitle(title: @Title) {
+        let key = title.text
+        let oldTitle <- self.dictionaryOfTitles[key] <- title
+        destroy oldTitle
+    }
+
+    pub fun removeDictTitle(key: String): @Title {
+        let title <- self.dictionaryOfTitles.remove(key: key)!
+        return <- title
+    }
+
+    init() {
+        self.arrayOfTitles <- []
+        self.dictionaryOfTitles <- {}
+    }
+
+}
+</pre>
