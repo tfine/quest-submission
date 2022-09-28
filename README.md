@@ -320,3 +320,44 @@ pub contract Quest {
 
 }
 </pre>
+
+Chapter 3, Day 3
+
+1.
+<pre>
+pub contract Example {
+
+    pub var dictionaryOfExampleResources: @{String: ExampleResource}
+
+    pub resource ExampleResource {
+        pub let text: String
+        init(_text: String) {
+            self.text = _text
+        }
+    }
+
+    pub fun getReference(key: String): &ExampleResource? {
+        return &self.dictionaryOfExampleResources[key] as &ExampleResource?
+    }
+
+    init() {
+        self.dictionaryOfExampleResources <- {
+                "One": <- create ExampleResource(_text: "A"), 
+                "Two": <- create ExampleResource(_text: "B")
+            }
+    }
+
+}
+</pre>
+
+2.
+<pre>
+import Example from 0x01
+
+pub fun main() {
+  var a = Example.getReference(key: "Two")
+  log(a)
+}
+</pre>
+
+3. References are useful when one would like to change or manipulate a resource without doing the costly and difficult tests associated with moving that resource into a function.
