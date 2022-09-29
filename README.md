@@ -626,3 +626,24 @@ pub fun main(address: Address): String {
   return testResource.name
 }
 </pre>
+
+Chapter 4, Day 3 
+
+1. Why did we add a Collection to this contract? List the two main reasons.
+
+Because otherwise we would have to keep track of storage paths, and they might conflict. A collection also creates a function that would allow other people to give us an NFT. (Additionally, collections may make NFTs easier to organize and keep track of.)
+
+2. What do you have to do if you have resources "nested" inside of another resource? ("Nested resources")
+
+You must have a function named destory() that can destroy these nested resources.
+
+Brainstorm some extra things we may want to add to this contract. Think about what might be problematic with this contract and how we could fix it.
+
+Idea #1: Do we really want everyone to be able to mint an NFT? 🤔.
+
+We might want to restrict the circumstances in which someone could mint an NFT.
+
+Idea #2: If we want to read information about our NFTs inside our Collection, right now we have to take it out of the Collection to do so. Is this good?
+
+We might have additional public facing function that reveal details about the collection?
+
