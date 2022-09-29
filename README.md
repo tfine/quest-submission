@@ -441,3 +441,29 @@ pub contract Stuff {
       log(newGreeting)
     }
 }
+
+Chapter 3, Day 5
+
+AREA 1:
+
+Read: a, b, c, d
+Write: a, b, c, d 
+
+AREA 2:
+
+Read: a, b, c
+Write: a
+
+AREA 3:
+
+Read: a, b, c
+Write: a
+
+AREA 4:
+
+Read: a, b, c
+Write: a
+
+ publicFunc: All scope
+ contractFunc: All scope in contract
+ privateFunc: Only in current and inner scope
