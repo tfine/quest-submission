@@ -361,3 +361,83 @@ pub fun main() {
 </pre>
 
 3. References are useful when one would like to change or manipulate a resource without doing the costly and difficult tests associated with moving that resource into a function.
+
+Chapter 3, Day 4:
+
+1. To make sure that functions implement certain elements as requirements, and to gate the accessibility of functions to particular sources.
+
+2. 
+
+<pre>
+pub contract Head {
+
+    pub resource interface IGesture {
+      pub var movementOne: String
+    }
+
+    pub resource Gesture: IGesture {
+      pub var movementOne: String
+      pub var movementTwo: String
+
+      pub fun changeGestureOne(newGesture: String): String {
+        self.movementOne = newGesture;
+        return self.movementOne 
+      }
+
+      init() {
+        self.movementOne = "Shake"
+        self.movementTwo = "Nod"
+      }
+    }
+
+    pub fun accessContent() {
+      let gesture: @Gesture <- create Gesture()
+      log(gesture.movementOne)
+
+      destroy gesture
+    }
+
+    pub fun restrictContent() {
+      let gesture: @Gesture{IGesture} <- create Gesture()
+      log(gesture.movementTwo)
+
+      destroy gesture
+    }
+}
+</pre>
+
+3. 
+
+pub contract Stuff {
+
+    pub struct interface ITest {
+      pub var greeting: String
+      pub var favouriteFruit: String
+      
+      pub fun changeGreeting(newGreeting: String): String // add to permit function call below 
+    }
+
+    // ERROR:
+    // `structure Stuff.Test does not conform 
+    // to structure interface Stuff.ITest`
+    pub struct Test: ITest {
+      pub var greeting: String
+      pub var favouriteFruit: String  // ADD line
+   
+      pub fun changeGreeting(newGreeting: String): String {
+        self.greeting = newGreeting
+        return self.greeting // returns the new greeting
+      }
+
+      init() {
+        self.greeting = "Hello!"
+        self.favouriteFruit = "Pineapple"; // add init, not completely need
+      }
+    }
+
+    pub fun fixThis() {
+      let test: Test{ITest} = Test()
+      let newGreeting = test.changeGreeting(newGreeting: "Bonjour!") // ERROR HERE: `member of restricted type is not accessible: changeGreeting`
+      log(newGreeting)
+    }
+}
