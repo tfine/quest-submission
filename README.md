@@ -469,3 +469,33 @@ publicFunc: All scope
 contractFunc: All scope in contract
  
 privateFunc: Only in current and inner scope
+
+Chapter 4, Day 1
+
+1. Explain what lives inside of an account.
+
+An account holds both data storage and contract code, which can operate on data.
+
+2. What is the difference between the /storage/, /public/, and /private/ paths?
+
+Storage actually is located in /storage/, while /public/ and /private/ are paths that the owner can use to give access to data. /public/ is accessible to everyone, while /private/ is only accessible to the owner and other wallets that the owner chooses.
+
+3. What does .save() do? What does .load() do? What does .borrow() do?
+
+Save puts data in storage, while load take a resource from storage. Borrow, however, does not involve a resource and borrows a reference so that the data can be looked at (without being moved).
+
+4. Explain why we couldn't save something to our account storage inside of a script.
+
+Authentication is necessary to add to account storage. This is an obvious architecture decision for the blockchain.
+
+5. Explain why I couldn't save something to your account.
+
+You don't have the necessary authentication to save something, like a resource, to my account.
+
+6. Define a contract that returns a resource that has at least 1 field in it. Then, write 2 transactions:
+
+i. A transaction that first saves the resource to account storage, then loads it out of account storage, logs a field inside the resource, and destroys it.
+
+ii. A transaction that first saves the resource to account storage, then borrows a reference to it, and logs a field inside the resource.
+
+Quiz
