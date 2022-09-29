@@ -464,6 +464,8 @@ AREA 4:
 Read: a, b, c
 Write: a
 
- publicFunc: All scope
- contractFunc: All scope in contract
- privateFunc: Only in current and inner scope
+publicFunc: All scope
+ 
+contractFunc: All scope in contract
+ 
+privateFunc: Only in current and inner scope
