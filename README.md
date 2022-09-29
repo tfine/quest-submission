@@ -496,6 +496,42 @@ You don't have the necessary authentication to save something, like a resource, 
 
 i. A transaction that first saves the resource to account storage, then loads it out of account storage, logs a field inside the resource, and destroys it.
 
+<pre>
+import Example from 0x01
+transaction() {
+  prepare(signer: AuthAccount) {
+    let testResource <- Example.createTest()
+    
+    let accessResource = signer.save(<- testResource, to: /storage/MyTestResource) 
+
+    let loadedResource <- signer.load<@Example.Test>(from: /storage/MyTestResource) 
+                 ?? panic("Resource does not exist.")
+    log(loadedResource.temple) 
+
+    destroy loadedResource
+  }
+
+  execute {
+
+  }
+}
+</pre>
+
+
 ii. A transaction that first saves the resource to account storage, then borrows a reference to it, and logs a field inside the resource.
 
-Quiz
+import Example from 0x01
+transaction() {
+  prepare(signer: AuthAccount) {
+    let testResource <- Example.createTest()
+    let accessResource = signer.save(<- testResource, to: /storage/MyTestResource) 
+
+    let borrowedResource = signer.borrow<&Example.Test>(from: /storage/MyTestResource) 
+                 ?? panic("Resource does not exist.")
+    log(borrowedResource.temple) 
+  }
+
+  execute {
+
+  }
+}
