@@ -537,3 +537,92 @@ transaction() {
   }
 }
 </pre>
+
+Chapter 4, Day 2
+
+1. What does .link() do?
+
+The link function takes a resource, or function, in storage and exposes it to a particular path.
+
+2. In your own words (no code), explain how we can use resource interfaces to only expose certain things to the /public/ path.
+
+Resource interfaces can refine the accessible functions or elements of an object to make sure that only particular ones are exposed. The schema for the interface will define what is made available.
+
+3. Deploy a contract that contains a resource that implements a resource interface. Then, do the following:
+
+<pre>
+pub contract Stuff {
+
+  pub resource interface ITest {
+    pub var name: String
+  }
+
+  // `Test` now implements `ITest`
+  pub resource Test: ITest {
+    pub var name: String
+    pub var nickname: String
+
+    pub fun changeName(newName: String) {
+      self.name = newName
+    }
+
+    init() {
+      self.name = "Todd"
+      self.nickname = "Toad" 
+    }
+  }
+
+  pub fun createTest(): @Test {
+    return <- create Test()
+  }
+
+}
+</pre>
+
+i. In a transaction, save the resource to storage and link it to the public with the restrictive interface.
+import Stuff from 0x01
+
+transaction {
+
+  prepare(signer: AuthAccount) {
+  signer.save(<- Stuff.createTest(), to: /storage/MyTestResource)
+  signer.link<&Stuff.Test{Stuff.ITest}>(/public/MyTestResource, target: /storage/MyTestResource)
+  }
+
+  execute {
+  }
+}
+
+ii. Run a script that tries to access a non-exposed field in the resource interface, and see the error pop up.
+
+<pre>
+import Stuff from 0x01
+
+pub fun main(address: Address): String {
+  let publicCapability: Capability<&Stuff.Test{Stuff.ITest}> =
+    getAccount(address).getCapability<&Stuff.Test{Stuff.ITest}>(/public/MyTestResource)
+
+  let testResource: &Stuff.Test{Stuff.ITest} = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
+
+  // This works because `name` is in `&Stuff.Test{Stuff.ITest}`
+  //log(testResource.name)
+  log(testResource.nickname)
+  return testResource.nickname
+}
+</pre>
+
+iii. Run the script and access something you CAN read from. Return it from the script.
+
+<pre>
+import Stuff from 0x01
+
+pub fun main(address: Address): String {
+  let publicCapability: Capability<&Stuff.Test{Stuff.ITest}> =
+    getAccount(address).getCapability<&Stuff.Test{Stuff.ITest}>(/public/MyTestResource)
+
+  let testResource: &Stuff.Test{Stuff.ITest} = publicCapability.borrow() ?? panic("The capability doesn't exist or you did not specify the right type when you got the capability.")
+
+  log(testResource.name)
+  return testResource.name
+}
+</pre>
