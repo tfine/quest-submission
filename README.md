@@ -520,6 +520,7 @@ transaction() {
 
 ii. A transaction that first saves the resource to account storage, then borrows a reference to it, and logs a field inside the resource.
 
+<pre>
 import Example from 0x01
 transaction() {
   prepare(signer: AuthAccount) {
@@ -535,3 +536,4 @@ transaction() {
 
   }
 }
+</pre>
