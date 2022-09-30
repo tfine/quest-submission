@@ -649,6 +649,7 @@ We might have additional public facing function that reveal details about the co
 
 Chapter 4, Day 4
 
+<pre>
 pub contract CryptoPoops {
   
   pub var totalSupply: UInt64
@@ -741,4 +742,5 @@ pub contract CryptoPoops {
     self.account.save(<- create Minter(), to: /storage/Minter)
   }
 }
+
 </pre>
