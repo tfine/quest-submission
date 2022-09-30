@@ -647,3 +647,97 @@ Idea #2: If we want to read information about our NFTs inside our Collection, ri
 
 We might have additional public facing function that reveal details about the collection?
 
+Chapter 4, Day 4
+
+pub contract CryptoPoops {
+  
+  pub var totalSupply: UInt64
+
+  // This is an NFT resource that contains a name,
+  // favouriteFood, and luckyNumber
+  pub resource NFT {
+    pub let id: UInt64
+
+    pub let name: String
+    pub let favouriteFood: String
+    pub let luckyNumber: Int
+
+    init(_name: String, _favouriteFood: String, _luckyNumber: Int) {
+      self.id = self.uuid
+
+      self.name = _name
+      self.favouriteFood = _favouriteFood
+      self.luckyNumber = _luckyNumber
+    }
+  }
+
+  // This is a resource interface that defines the functions of an nft collection 
+  pub resource interface CollectionPublic {
+    pub fun deposit(token: @NFT)
+    pub fun getIDs(): [UInt64]
+    pub fun borrowNFT(id: UInt64): &NFT
+  }
+
+  // A resource for a nft collection
+  pub resource Collection: CollectionPublic {
+    pub var ownedNFTs: @{UInt64: NFT}
+
+    // deposit an nft into the dictionary of nfts with the id of the token
+    pub fun deposit(token: @NFT) {
+      self.ownedNFTs[token.id] <-! token
+    }
+
+    // withdraw an nft token according to the id
+    pub fun withdraw(withdrawID: UInt64): @NFT {
+      let nft <- self.ownedNFTs.remove(key: withdrawID) 
+              ?? panic("This NFT does not exist in this Collection.")
+      return <- nft
+    }
+
+    // returns a list with all ids in the collection dictionary
+    pub fun getIDs(): [UInt64] {
+      return self.ownedNFTs.keys
+    }
+
+    // returns a reference to the nft with the given id
+    pub fun borrowNFT(id: UInt64): &NFT {
+      return (&self.ownedNFTs[id] as &NFT?)!
+    }
+
+    // initialize the collection as empty
+    init() {
+      self.ownedNFTs <- {}
+    }
+
+    // destroy all nfts in the collection
+    destroy() {
+      destroy self.ownedNFTs
+    }
+  }
+
+  // returns an empty collection
+  pub fun createEmptyCollection(): @Collection {
+    return <- create Collection()
+  }
+
+  // a new resource that mints nfts
+  pub resource Minter {
+
+    // mints an nft with the provided parameters of favourite food and lucky number
+    pub fun createNFT(name: String, favouriteFood: String, luckyNumber: Int): @NFT {
+      return <- create NFT(_name: name, _favouriteFood: favouriteFood, _luckyNumber: luckyNumber)
+    }
+
+    // returns a resource as the minter
+    pub fun createMinter(): @Minter {
+      return <- create Minter()
+    }
+
+  }
+
+  // creates a minter resource within the storage of the account that created the contract
+  init() {
+    self.totalSupply = 0
+    self.account.save(<- create Minter(), to: /storage/Minter)
+  }
+}
