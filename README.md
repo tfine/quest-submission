@@ -741,3 +741,4 @@ pub contract CryptoPoops {
     self.account.save(<- create Minter(), to: /storage/Minter)
   }
 }
+</pre>
