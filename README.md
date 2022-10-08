@@ -744,3 +744,110 @@ pub contract CryptoPoops {
 }
 
 </pre>
+
+Chapter 5, Day 1
+
+1. An event is emitted messaged that can be sent within a function to others on the blockchain.
+
+2.
+
+<pre>
+pub contract Example {
+
+  pub event yo(message: String)
+
+  pub fun greeting(_message: String) {
+      emit yo(message: _message)
+  }
+</pre>
+
+<pre>
+import Example from 0x01
+
+transaction {
+
+  prepare(acct: AuthAccount) {}
+
+  execute {
+    Example.greeting(_message: "hey");
+  }
+}
+</pre>
+
+3. 
+
+<pre>
+pub contract Example {
+
+  var lastmessage
+
+  pub event yo(message: String)
+
+  pub fun greeting(_message: String) {
+      pre {
+        _message != "": "No message"
+      }
+      emit yo(message: _message)
+      post {
+        _message == "end": "Program stopped due to end command." 
+      }
+  }
+}
+</pre>
+
+4. 
+
+<pre>
+pub contract Test {
+
+  // TODO
+  // Tell me whether or not this function will log the name.
+  // name: 'Jacob'
+  // YES, length is five!
+  pub fun numberOne(name: String) {
+    pre {
+      name.length == 5: "This name is not cool enough."
+    }
+    log(name)
+  }
+
+  // TODO
+  // Tell me whether or not this function will return a value.
+  // name: 'Jacob'
+  // pre condition passed because string length greater then one, post condition
+  // fails because doesn't acknowledge removal of last name
+  pub fun numberTwo(name: String): String {
+    pre {
+      name.length >= 0: "You must input a valid name."
+    }
+    post {
+      result == "Jacob Tucker"
+    }
+    return name.concat(" Tucker")
+  }
+
+  pub resource TestResource {
+    pub var number: Int
+
+    // TODO
+    // Tell me whether or not this function will log the updated number.
+    // Also, tell me the value of `self.number` after it's run.
+    // Post condition fails, because the before number should less than result
+    // after the function is run the first time, the self.number will increment to 1, but the
+    // post condition will fail
+    pub fun numberThree(): Int {
+      post {
+        before(self.number) == result + 1
+      }
+      self.number = self.number + 1
+      return self.number
+    }
+
+    init() {
+      self.number = 0
+    }
+
+  }
+
+}
+</pre>
