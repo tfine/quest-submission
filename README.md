@@ -851,3 +851,64 @@ pub contract Test {
 
 }
 </pre>
+
+1. Explain why standards can be beneficial to the Flow ecosystem.
+
+Standards ensure that certain types of contracts function as expected in a secure way. They strengthen the ecosystem because people can trust contracts, especially common contracts for things like NFTS.
+
+2. What is YOUR favourite food?
+
+Escargot!
+
+Please fix this code (Hint: There are two things wrong):
+
+The contract interface:
+
+pub contract interface ITest {
+  pub var number: Int
+  
+  pub fun updateNumber(newNumber: Int) {
+    pre {
+      newNumber >= 0: "We don't like negative numbers for some reason. We're mean."
+    }
+    post {
+      self.number == newNumber: "Didn't update the number to be the new number."
+    }
+  }
+
+  pub resource interface IStuff {
+    pub var favouriteActivity: String
+  }
+
+  pub resource Stuff {
+    pub var favouriteActivity: String
+  }
+}
+The implementing contract:
+
+
+// specificy that it is implementing a standard
+pub contract Test: Itest {
+  pub var number: Int
+  
+  pub fun updateNumber(newNumber: Int) {
+    // should be newNumber
+    self.number = newNumber
+  }
+
+  pub resource interface IStuff {
+    pub var favouriteActivity: String
+  }
+
+  pub resource Stuff: IStuff {
+    pub var favouriteActivity: String
+
+    init() {
+      self.favouriteActivity = "Playing League of Legends."
+    }
+  }
+
+  init() {
+    self.number = 0
+  }
+}
