@@ -864,6 +864,7 @@ Please fix this code (Hint: There are two things wrong):
 
 The contract interface:
 
+<pre>
 pub contract interface ITest {
   pub var number: Int
   
@@ -884,10 +885,11 @@ pub contract interface ITest {
     pub var favouriteActivity: String
   }
 }
+</pre>
 The implementing contract:
 
-
-// specificy that it is implementing a standard
+<pre>
+// specify that it is implementing a standard
 pub contract Test: Itest {
   pub var number: Int
   
@@ -912,3 +914,4 @@ pub contract Test: Itest {
     self.number = 0
   }
 }
+</pre>
