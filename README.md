@@ -915,3 +915,12 @@ pub contract Test: Itest {
   }
 }
 </pre>
+
+1. What does "force casting" with as! do? Why is it useful in our Collection?
+
+It downcasts the standard interface example to the specific type used in the contract. It is necessary to make sure that only the specific type of NFT intended for our collection will be entered or withdrawn.
+
+2. What does auth do? When do we use it?
+
+auth is needed for references (instead of direct examples of an interface). auth make sure that a reference is an authorized reference before it can be downcast to the specific type used in our NFT contract.
+
