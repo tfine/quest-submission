@@ -924,3 +924,239 @@ It downcasts the standard interface example to the specific type used in the con
 
 auth is needed for references (instead of direct examples of an interface). auth make sure that a reference is an authorized reference before it can be downcast to the specific type used in our NFT contract.
 
+3.
+
+0x01:
+
+<pre>
+import NonFungibleToken from 0x02
+
+pub contract CryptoPoops: NonFungibleToken {
+  pub var totalSupply: UInt64
+
+  pub event ContractInitialized()
+  pub event Withdraw(id: UInt64, from: Address?)
+  pub event Deposit(id: UInt64, to: Address?)
+
+  pub resource NFT: NonFungibleToken.INFT {
+    pub let id: UInt64
+
+    pub let name: String
+    pub let favouriteFood: String
+    pub let luckyNumber: Int
+
+    init(_name: String, _favouriteFood: String, _luckyNumber: Int) {
+      self.id = self.uuid
+
+      self.name = _name
+      self.favouriteFood = _favouriteFood
+      self.luckyNumber = _luckyNumber
+    }
+  }
+
+  pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic {
+    pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
+
+    pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
+      let nft <- self.ownedNFTs.remove(key: withdrawID) 
+            ?? panic("This NFT does not exist in this Collection.")
+      emit Withdraw(id: nft.id, from: self.owner?.address)
+      return <- nft
+    }
+
+    pub fun deposit(token: @NonFungibleToken.NFT) {
+      let nft <- token as! @NFT
+      emit Deposit(id: nft.id, to: self.owner?.address)
+      self.ownedNFTs[nft.id] <-! nft
+    }
+
+    pub fun getIDs(): [UInt64] {
+      return self.ownedNFTs.keys
+    }
+
+    pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
+      return (&self.ownedNFTs[id] as &NonFungibleToken.NFT?)!
+    }
+
+    pub fun borrowAuthNFT(id: UInt64): &NFT {
+      let ref = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
+      return ref as! &NFT
+    }
+
+    init() {
+      self.ownedNFTs <- {}
+    }
+
+    destroy() {
+      destroy self.ownedNFTs
+    }
+  }
+
+  pub fun createEmptyCollection(): @NonFungibleToken.Collection {
+    return <- create Collection()
+  }
+
+  pub resource Minter {
+
+    pub fun createNFT(name: String, favouriteFood: String, luckyNumber: Int): @NFT {
+      return <- create NFT(_name: name, _favouriteFood: favouriteFood, _luckyNumber: luckyNumber)
+    }
+
+    pub fun createMinter(): @Minter {
+      return <- create Minter()
+    }
+
+  }
+
+  init() {
+    self.totalSupply = 0
+    emit ContractInitialized()
+    self.account.save(<- create Minter(), to: /storage/Minter)
+  }
+}
+</pre>
+
+0x02:
+
+<pre>
+/**
+## The Flow Non-Fungible Token standard
+*/
+
+// The main NFT contract interface. Other NFT contracts will
+// import and implement this interface
+//
+
+pub contract interface NonFungibleToken {
+
+    pub var totalSupply: UInt64
+
+    pub event ContractInitialized()
+
+    pub event Withdraw(id: UInt64, from: Address?)
+
+    pub event Deposit(id: UInt64, to: Address?)
+
+    pub resource interface INFT {
+        // The unique ID that each NFT has
+        pub let id: UInt64
+    }
+
+    pub resource NFT: INFT {
+        pub let id: UInt64
+    }
+
+    pub resource interface Provider {
+        pub fun withdraw(withdrawID: UInt64): @NFT {
+            post {
+                result.id == withdrawID: "The ID of the withdrawn token must be the same as the requested ID"
+            }
+        }
+    }
+
+    pub resource interface Receiver {
+        pub fun deposit(token: @NFT)
+    }
+
+    pub resource interface CollectionPublic {
+        pub fun deposit(token: @NFT)
+        pub fun getIDs(): [UInt64]
+        pub fun borrowNFT(id: UInt64): &NFT
+    }
+
+    pub resource Collection: Provider, Receiver, CollectionPublic {
+
+        // Dictionary to hold the NFTs in the Collection
+        pub var ownedNFTs: @{UInt64: NFT}
+
+        // withdraw removes an NFT from the collection and moves it to the caller
+        pub fun withdraw(withdrawID: UInt64): @NFT
+
+        // deposit takes a NFT and adds it to the collections dictionary
+        // and adds the ID to the id array
+        pub fun deposit(token: @NFT)
+
+        // getIDs returns an array of the IDs that are in the collection
+        pub fun getIDs(): [UInt64]
+
+        // Returns a borrowed reference to an NFT in the collection
+        // so that the caller can read data and call methods from it
+        pub fun borrowNFT(id: UInt64): &NFT {
+            pre {
+                self.ownedNFTs[id] != nil: "NFT does not exist in the collection!"
+            }
+        }
+    }
+
+    pub fun createEmptyCollection(): @Collection {
+        post {
+            result.getIDs().length == 0: "The created collection must be empty!"
+        }
+    }
+}
+</pre>
+
+Transaction 1: Create Collection
+
+<pre>
+import CryptoPoops from 0x01
+transaction() {
+  prepare(signer: AuthAccount) {
+    // Store a `CryptoPoops.Collection` in our account storage.
+    signer.save(<- CryptoPoops.createEmptyCollection(), to: /storage/MyCollection)
+    
+    // Link it to the public.
+    signer.link<&CryptoPoops.Collection>(/public/MyCollection, target: /storage/MyCollection)
+  }
+}
+</pre>
+
+Transaction 2: Mint NFT to an Address
+
+<pre>
+import CryptoPoops from 0x01
+
+transaction(recipient: Address) {
+
+  // Let's assume the `signer` was the one who deployed the contract, since only they have the `Minter` resource
+  prepare(signer: AuthAccount) {
+    // Get a reference to the `Minter`
+    let minter = signer.borrow<&CryptoPoops.Minter>(from: /storage/Minter)
+                    ?? panic("This signer is not the one who deployed the contract.")
+
+    // Get a reference to the `recipient`s public Collection
+    
+    let recipientsCollection = getAccount(recipient).getCapability(/public/MyCollection)
+                                  .borrow<&CryptoPoops.Collection>()
+                                  ?? panic("The recipient does not have a Collection.")
+
+    // mint the NFT using the reference to the `Minter`
+    let nft <- minter.createNFT(name: "bob", favouriteFood: "chicken", luckyNumber: 6)
+
+    // deposit the NFT in the recipient's Collection
+    recipientsCollection.deposit(token: <- nft)
+    
+  }
+}
+</pre>
+        
+Script:
+        
+<pre>
+import CryptoPoops from 0x01
+
+pub fun main(recipient: Address, _id: UInt64) {
+
+      let recipientsCollection = getAccount(recipient).getCapability(/public/MyCollection)
+         .borrow<&CryptoPoops.Collection>()
+         ?? panic("The recipient does not have a Collection.")
+
+      log(recipientsCollection.getIDs());
+
+      let nft = recipientsCollection.borrowAuthNFT(id: _id);
+
+      log(nft.name)
+      log(nft.favouriteFood)
+      log(nft.luckyNumber);
+}
+</pre>
