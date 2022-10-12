@@ -852,6 +852,8 @@ pub contract Test {
 }
 </pre>
 
+Chapter 5, Day 2
+
 1. Explain why standards can be beneficial to the Flow ecosystem.
 
 Standards ensure that certain types of contracts function as expected in a secure way. They strengthen the ecosystem because people can trust contracts, especially common contracts for things like NFTS.
@@ -915,6 +917,8 @@ pub contract Test: Itest {
   }
 }
 </pre>
+
+Chapter 5, Day 3
 
 1. What does "force casting" with as! do? Why is it useful in our Collection?
 
